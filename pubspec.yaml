@@ -1,0 +1,49 @@
+name: calotracker
+description: "App per il monitoraggio delle calorie con immagini, video e grafici."
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  http: ^1.2.2
+  mobile_scanner: ^6.0.2
+  connectivity_plus: ^6.0.3
+
+  # Icone stile iOS
+  cupertino_icons: ^1.0.8
+
+  # Plugin per selezionare immagini (da galleria o fotocamera)
+  image_picker: ^1.0.4
+
+  # Plugin per riprodurre video locali
+  video_player: ^2.8.1
+
+  # Preferenze locali (key-value)
+  shared_preferences: ^2.5.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/videos/
+
+  # Per aggiungere font personalizzati, decommenta e configura:
+  # fonts:
+  #   - family: NomeFont
+  #     fonts:
+  #       - asset: fonts/NomeFont-Regular.ttf
+  #       - asset: fonts/NomeFont-Bold.ttf
+  #         weight: 700
