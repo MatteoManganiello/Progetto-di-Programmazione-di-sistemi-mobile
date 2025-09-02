@@ -329,7 +329,7 @@ class _CaloriesHomePageState extends State<CaloriesHomePage> {
                 '${_dailyGoal!} kcal',
                 style: theme.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
-                  fontSize: 17,
+                  fontSize: 15,
                 ),
               ),
             ),
@@ -379,6 +379,10 @@ class _CaloriesHomePageState extends State<CaloriesHomePage> {
                 height: 60,
                 onTap: _openDailyGoalPage,
                 trailing: goalTrailing,
+                titleStyle: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               if (_dailyGoal == null) ...[
                 const SizedBox(height: 8),
@@ -445,41 +449,32 @@ class _CaloriesHomePageState extends State<CaloriesHomePage> {
                 ],
               ),
               const SizedBox(height: 12),
-              Builder(
-                builder: (context) {
-                  void _openSuggestions() {
+              Card(
+                color: const Color.fromARGB(255, 45, 184, 253),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(40),
+                  splashFactory: NoSplash.splashFactory,
+                  highlightColor: Colors.transparent,
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (_) => const MealSuggestionsPage(),
                       ),
                     );
-                  }
-
-                  return Card(
-                    color: const Color.fromARGB(255, 45, 184, 253),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40),
+                  },
+                  child: const SizedBox(
+                    height: 81,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 19.0),
+                      child: _SuggestionsCardContent(),
                     ),
-                    clipBehavior: Clip.antiAlias,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(40),
-                      splashFactory: NoSplash.splashFactory,
-                      highlightColor: Colors.transparent,
-                      onTap: _openSuggestions,
-                      child: const SizedBox(
-                        height: 81,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 19.0,
-                            vertical: 2,
-                          ),
-                          child: _SuggestionsCardContent(),
-                        ),
-                      ),
-                    ),
-                  );
-                },
+                  ),
+                ),
               ),
               const SizedBox(height: 24),
               const Text('Blogs', style: TextStyle(fontSize: 22)),
@@ -588,6 +583,7 @@ class _ColoredCard extends StatelessWidget {
   final BorderRadius? innerBorderRadius;
   final double? imageWidth;
   final double? imageHeight;
+  final TextStyle? titleStyle;
 
   const _ColoredCard({
     required this.cardName,
@@ -606,6 +602,7 @@ class _ColoredCard extends StatelessWidget {
     this.innerBorderRadius,
     this.imageWidth,
     this.imageHeight,
+    this.titleStyle,
   });
 
   @override
@@ -619,6 +616,7 @@ class _ColoredCard extends StatelessWidget {
       iconTopLeft: iconTopLeft,
       imageWidth: imageWidth,
       imageHeight: imageHeight,
+      titleStyle: titleStyle,
     );
 
     return SizedBox(
@@ -656,6 +654,7 @@ class _SampleCard extends StatelessWidget {
   final bool iconTopLeft;
   final double? imageWidth;
   final double? imageHeight;
+  final TextStyle? titleStyle;
 
   const _SampleCard({
     required this.cardName,
@@ -666,10 +665,15 @@ class _SampleCard extends StatelessWidget {
     this.iconTopLeft = false,
     this.imageWidth,
     this.imageHeight,
+    this.titleStyle,
   });
 
   @override
   Widget build(BuildContext context) {
+    final style =
+        titleStyle ??
+        const TextStyle(fontSize: 20, fontWeight: FontWeight.w600);
+
     if (iconTopLeft) {
       return InkWell(
         onTap: onTap,
@@ -699,10 +703,7 @@ class _SampleCard extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       cardName,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: style,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -739,7 +740,7 @@ class _SampleCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   cardName,
-                  style: const TextStyle(fontSize: 20),
+                  style: style,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -813,41 +814,49 @@ class _SuggestionsCardContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Non sai cosa mangiare oggi?',
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-        ),
-        const Spacer(),
-        Center(
-          child: FilledButton.icon(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const MealSuggestionsPage()),
-              );
-            },
-            style: FilledButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(40),
-                side: const BorderSide(color: Colors.black54, width: 2),
+    return SizedBox.expand(
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Text(
+              'Non sai cosa mangiare oggi?',
+              maxLines: 2,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 4),
+            FilledButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const MealSuggestionsPage(),
+                  ),
+                );
+              },
+              style: FilledButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 6,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40),
+                  side: const BorderSide(color: Colors.black54, width: 2),
+                ),
+              ),
+              icon: const Icon(Icons.restaurant_menu),
+              label: const Text(
+                'Apri suggerimenti',
+                style: TextStyle(fontWeight: FontWeight.w600),
               ),
             ),
-            icon: const Icon(Icons.restaurant_menu),
-            label: const Text(
-              'Apri suggerimenti',
-              style: TextStyle(fontWeight: FontWeight.w600),
-            ),
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
