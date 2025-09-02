@@ -18,7 +18,7 @@ class DailyCaloLocalDs {
     if (raw == null) return [];
     final list = (jsonDecode(raw) as List).cast<Map<String, dynamic>>();
     return list.map((e) => CalorieEntry.fromMap(e)).toList()
-      ..sort((a, b) => b.timestamp.compareTo(a.timestamp)); // recenti in alto
+      ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
   }
 
   Future<void> saveTodayEntries(List<CalorieEntry> entries) async {

@@ -3,8 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeLocalDs {
   static const _prefKeyDailyGoal = 'daily_calorie_goal';
-  static const _entriesKeyPrefix = 'calo_entries_'; // + YYYY-MM-DD
-  static const _attivitaKeyPrefix = 'attivita_selezionate_'; // + YYYYMMDD
+  static const _entriesKeyPrefix = 'calo_entries_';
+  static const _attivitaKeyPrefix = 'attivita_selezionate_';
 
   String _todayKey() {
     final now = DateTime.now();
@@ -28,7 +28,6 @@ class HomeLocalDs {
     await sp.setInt(_prefKeyDailyGoal, goal);
   }
 
-  /// Somma delle kcal delle voci di oggi: caloriesPerUnit * quantity
   Future<int> getTodayTotalCalories() async {
     final sp = await SharedPreferences.getInstance();
     final raw = sp.getString('$_entriesKeyPrefix${_todayKey()}');
@@ -44,7 +43,6 @@ class HomeLocalDs {
     return total;
   }
 
-  /// Lista attività selezionate oggi, ordinata per timestamp desc
   Future<List<Map<String, dynamic>>> getAttivitaSelezionateOggi() async {
     final sp = await SharedPreferences.getInstance();
     final key = '$_attivitaKeyPrefix${_todayKeyCompact()}';

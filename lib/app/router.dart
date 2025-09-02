@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
-// UI pages (no StartScreen import here to avoid circular deps)
 import '../features/calories/ui/calories_home_page.dart';
 import '../features/calories/ui/daily_calo_page.dart';
 import '../features/calories/ui/meal_suggestions_page.dart';
 import '../features/calories/ui/weekly_goal_page.dart';
 import '../features/calories/ui/activities_page.dart';
 
-/// Centralized route names (StartScreen navigates using AppRoutes.home)
 abstract class AppRoutes {
   static const home = '/home';
   static const dailyCalo = '/daily-calo';
@@ -37,7 +35,6 @@ class AppRouter {
         return _material(ActivitiesPage(kcalDaSmaltire: kcal));
 
       default:
-        // Unknown route: go to Home
         return _material(const CaloriesHomePage());
     }
   }

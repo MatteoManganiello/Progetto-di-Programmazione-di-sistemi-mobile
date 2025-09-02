@@ -15,10 +15,8 @@ class CalorieEntry {
     required this.timestamp,
   });
 
-  /// Calorie totali = calorie per unità * quantità
   int get totalKcal => caloriesPerUnit * quantity;
 
-  /// Conversione a mappa (per salvataggio locale)
   Map<String, dynamic> toMap() => {
     'id': id,
     'name': name,
@@ -28,7 +26,6 @@ class CalorieEntry {
     'timestamp': timestamp.toIso8601String(),
   };
 
-  /// Costruttore da mappa (per lettura locale o API)
   factory CalorieEntry.fromMap(Map<String, dynamic> map) => CalorieEntry(
     id: map['id'] as String,
     name: map['name'] as String,

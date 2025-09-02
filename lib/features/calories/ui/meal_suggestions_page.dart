@@ -17,11 +17,11 @@ class _MealSuggestionsPageState extends State<MealSuggestionsPage> {
   @override
   void initState() {
     super.initState();
-    // Iniezione semplice; puoi passare a DI centralizzato quando vuoi.
+
     repo = MealSuggestionsRepository(
       MealsApiDs(BaseApi(baseUrl: 'https://www.themealdb.com/api/json/v1/1')),
     );
-    _future = repo.getRandomMeals(8); // quante proposte vuoi
+    _future = repo.getRandomMeals(8);
   }
 
   void _openDetails(Meal meal) {
@@ -37,7 +37,6 @@ class _MealSuggestionsPageState extends State<MealSuggestionsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Header con titolo + bottone Chiudi
                   Row(
                     children: [
                       Expanded(
@@ -106,7 +105,7 @@ class _MealSuggestionsPageState extends State<MealSuggestionsPage> {
                     ),
 
                   const SizedBox(height: 16),
-                  // Pulsante evidente per uscire
+
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton.icon(
@@ -128,7 +127,7 @@ class _MealSuggestionsPageState extends State<MealSuggestionsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const BackButton(), // back sempre visibile
+        leading: const BackButton(),
         title: const Text('Cosa mangiare oggi?'),
       ),
       body: FutureBuilder<List<Meal>>(
@@ -155,17 +154,17 @@ class _MealSuggestionsPageState extends State<MealSuggestionsPage> {
             itemCount: meals.length,
             itemBuilder: (context, i) {
               final m = meals[i];
-              // Card → InkWell interno (no rettangolo overlay, splash disattivato)
+
               return Card(
                 elevation: 2,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
                 ),
-                clipBehavior: Clip.antiAlias, // clip contenuto + ripple
+                clipBehavior: Clip.antiAlias,
                 child: InkWell(
                   onTap: () => _openDetails(m),
                   borderRadius: BorderRadius.circular(14),
-                  splashFactory: NoSplash.splashFactory, // niente splash
+                  splashFactory: NoSplash.splashFactory,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

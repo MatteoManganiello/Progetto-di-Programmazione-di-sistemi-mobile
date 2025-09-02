@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ActivitiesLocalDs {
   static const _chiavePeso = 'peso_utente_kg';
-  static const _attivitaPrefix = 'attivita_selezionate_'; // + yyyymmdd
+  static const _attivitaPrefix = 'attivita_selezionate_';
 
   Future<double?> getPeso() async {
     final prefs = await SharedPreferences.getInstance();
@@ -23,7 +23,6 @@ class ActivitiesLocalDs {
     final m = now.month.toString().padLeft(2, '0');
     final d = now.day.toString().padLeft(2, '0');
     return '$_attivitaPrefix$y$m$d';
-    // <-- stessa forma usata dalla Home ("attivita_selezionate_yyyymmdd")
   }
 
   Future<Map<String, dynamic>> addAttivitaSelezionataOggi({
@@ -44,7 +43,6 @@ class ActivitiesLocalDs {
       'timestamp': DateTime.now().toIso8601String(),
     };
 
-    // mantieni una sola voce per nome (come nel tuo codice originale)
     final target = nome.toLowerCase();
     final filtrata = <String>[];
     for (final s in lista) {

@@ -26,7 +26,6 @@ class BaseApi {
     return jsonDecode(r.body) as Map<String, dynamic>;
   }
 
-  /// POST con body opzionale
   Future<Map<String, dynamic>> postJson(
     String endpoint, {
     Map<String, dynamic>? body,

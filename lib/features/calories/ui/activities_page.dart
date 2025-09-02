@@ -25,7 +25,6 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
   double _peso = 70;
   bool _loading = true;
 
-  // Catalogo attività (statico come nel tuo file originale)
   final List<_Attivita> _attivita = const [
     _Attivita(
       nome: 'Corsa leggera',
@@ -74,7 +73,6 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
   }
 
   double _minutiPer(double met, double pesoKg, int kcal) {
-    // formula classica: kcal/min = MET * 3.5 * peso(kg) / 200
     final kcalAlMin = (met * 3.5 * pesoKg) / 200.0;
     if (kcalAlMin <= 0) return 0;
     return kcal / kcalAlMin;

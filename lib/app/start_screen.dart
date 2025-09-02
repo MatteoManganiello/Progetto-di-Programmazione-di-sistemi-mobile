@@ -1,6 +1,5 @@
-// lib/app/start_screen.dart
 import 'package:flutter/material.dart';
-import 'router.dart'; // usa AppRoutes.home
+import 'router.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key});
@@ -19,7 +18,6 @@ class _StartScreenState extends State<StartScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // Top area con immagine
           Stack(
             children: [
               Container(
@@ -43,7 +41,6 @@ class _StartScreenState extends State<StartScreen> {
             ],
           ),
 
-          // Sfondo inferiore (stessa immagine, effetto continuità)
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -58,7 +55,6 @@ class _StartScreenState extends State<StartScreen> {
             ),
           ),
 
-          // Card bianca con CTA
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(

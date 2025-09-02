@@ -11,10 +11,9 @@ class OpenFoodFactsDs {
   final BaseApi api;
   OpenFoodFactsDs(this.api);
 
-  /// Ritorna nome, kcal (se presenti) e una nota sintetica
   Future<OffFoodInfo?> fetchDaBarcode(String barcode) async {
     final json = await api.getJson('/api/v0/product/$barcode.json');
-    final status = json['status'] as int?; // 1 = trovato
+    final status = json['status'] as int?;
     if (status != 1) return null;
 
     final product = json['product'] as Map<String, dynamic>?;
@@ -23,7 +22,7 @@ class OpenFoodFactsDs {
     if (name == null || name.isEmpty) return null;
 
     int? kcal;
-    // OFF può dare energia in kJ; se c'è 'nutriments' proviamo a leggere 'energy-kcal_100g'
+
     final nutr = product?['nutriments'] as Map<String, dynamic>?;
     if (nutr != null) {
       final kcalAny = nutr['energy-kcal_100g'] ?? nutr['energy-kcal_serving'];

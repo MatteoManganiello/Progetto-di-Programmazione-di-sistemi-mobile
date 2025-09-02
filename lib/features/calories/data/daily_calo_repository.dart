@@ -14,7 +14,6 @@ class DailyCaloRepository {
     required this.connectivity,
   });
 
-  // Locale
   Future<List<CalorieEntry>> getTodayEntries() => local.getTodayEntries();
 
   Future<void> addEntryToday(CalorieEntry entry) async {
@@ -40,7 +39,6 @@ class DailyCaloRepository {
 
   Future<int?> getDailyGoal() => local.getDailyGoal();
 
-  // Remote
   Future<bool> isOnline() => connectivity.isOnline();
 
   Future<OffFoodInfo?> fetchFromBarcode(String barcode) =>

@@ -13,7 +13,6 @@ class WeeklyGoalPage extends StatefulWidget {
 }
 
 class _WeeklyGoalPageState extends State<WeeklyGoalPage> {
-  // UI constants
   static const _brand = Color.fromARGB(255, 99, 228, 103);
   static const _min = 800, _max = 5000, _step = 50;
 
@@ -56,7 +55,7 @@ class _WeeklyGoalPageState extends State<WeeklyGoalPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Obiettivo impostato a $_goal kcal')),
     );
-    Navigator.pop(context, _goal); // ritorna il nuovo valore alla chiamante
+    Navigator.pop(context, _goal);
   }
 
   @override

@@ -12,7 +12,7 @@ class SchermataScannerCodiceBarre extends StatefulWidget {
 
 class _SchermataScannerCodiceBarreState
     extends State<SchermataScannerCodiceBarre> {
-  final _re = RegExp(r'^\d{8,14}$'); // EAN/UPC classici
+  final _re = RegExp(r'^\d{8,14}$');
   final _controller = MobileScannerController(
     torchEnabled: false,
     detectionSpeed: DetectionSpeed.normal,
@@ -27,7 +27,7 @@ class _SchermataScannerCodiceBarreState
   );
 
   bool _returned = false;
-  bool _torchOn = false; // stato locale per l’icona torcia
+  bool _torchOn = false;
 
   @override
   void dispose() {
@@ -40,11 +40,11 @@ class _SchermataScannerCodiceBarreState
     for (final b in capture.barcodes) {
       final value = b.rawValue ?? '';
       if (value.isEmpty) continue;
-      if (!_re.hasMatch(value)) continue; // filtra solo EAN/UPC
+      if (!_re.hasMatch(value)) continue;
 
       _returned = true;
       if (!mounted) return;
-      Navigator.pop(context, value); // torna con il barcode
+      Navigator.pop(context, value);
       break;
     }
   }
@@ -52,7 +52,7 @@ class _SchermataScannerCodiceBarreState
   void _toggleTorch() async {
     try {
       await _controller.toggleTorch();
-      setState(() => _torchOn = !_torchOn); // aggiorna solo l'icona locale
+      setState(() => _torchOn = !_torchOn);
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -125,7 +125,6 @@ class _SchermataScannerCodiceBarreState
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Anteprima camera + decoding
           MobileScanner(
             controller: _controller,
             onDetect: _onDetect,
@@ -142,7 +141,6 @@ class _SchermataScannerCodiceBarreState
             },
           ),
 
-          // Overlay con mirino
           IgnorePointer(
             child: Center(
               child: Container(
@@ -156,7 +154,6 @@ class _SchermataScannerCodiceBarreState
             ),
           ),
 
-          // Pulsante per input manuale
           Positioned(
             left: 16,
             right: 16,

@@ -65,7 +65,6 @@ class MealsApiDs {
   final BaseApi api;
   MealsApiDs(this.api);
 
-  /// Chiama /random.php n volte (TheMealDB non supporta batch su random).
   Future<List<Meal>> fetchRandomMeals(int n) async {
     final out = <Meal>[];
     for (var i = 0; i < n; i++) {
