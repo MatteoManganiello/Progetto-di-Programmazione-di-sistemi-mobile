@@ -1,13 +1,15 @@
+// lib/app/start_screen.dart
 import 'package:flutter/material.dart';
+import 'router.dart'; // usa AppRoutes.home
 
-class WelcomePage extends StatefulWidget {
-  const WelcomePage({super.key});
+class StartScreen extends StatefulWidget {
+  const StartScreen({super.key});
 
   @override
-  State<WelcomePage> createState() => _WelcomePageState();
+  State<StartScreen> createState() => _StartScreenState();
 }
 
-class _WelcomePageState extends State<WelcomePage> {
+class _StartScreenState extends State<StartScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -17,6 +19,7 @@ class _WelcomePageState extends State<WelcomePage> {
     return Scaffold(
       body: Stack(
         children: [
+          // Top area con immagine
           Stack(
             children: [
               Container(
@@ -39,6 +42,8 @@ class _WelcomePageState extends State<WelcomePage> {
               ),
             ],
           ),
+
+          // Sfondo inferiore (stessa immagine, effetto continuità)
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -52,6 +57,8 @@ class _WelcomePageState extends State<WelcomePage> {
               ),
             ),
           ),
+
+          // Card bianca con CTA
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -59,12 +66,13 @@ class _WelcomePageState extends State<WelcomePage> {
               width: width,
               decoration: const BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(100),
-                ),
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(100)),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 20,
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -72,7 +80,8 @@ class _WelcomePageState extends State<WelcomePage> {
                     Text(
                       'Scopri un nuovo stile di vita:\nMangia sano, vivi meglio.',
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: Colors.black87,
                             height: 1.3,
@@ -82,7 +91,10 @@ class _WelcomePageState extends State<WelcomePage> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () => Navigator.pushReplacementNamed(context, 'home'),
+                        onPressed: () => Navigator.pushReplacementNamed(
+                          context,
+                          AppRoutes.home,
+                        ),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           backgroundColor: const Color(0xFF75C0B7),

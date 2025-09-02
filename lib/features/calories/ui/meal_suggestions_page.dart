@@ -1,7 +1,7 @@
-// lib/meal_suggestions_page.dart
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import '../data/meal_suggestions_repository.dart';
+import '../data/remote/meals_api_ds.dart';
+import '../../../../core/network/base_api.dart';
 
 class MealSuggestionsPage extends StatefulWidget {
   const MealSuggestionsPage({super.key});
@@ -11,50 +11,25 @@ class MealSuggestionsPage extends StatefulWidget {
 }
 
 class _MealSuggestionsPageState extends State<MealSuggestionsPage> {
-  static const _api = 'https://www.themealdb.com/api/json/v1/1';
-  late Future<List<Map<String, dynamic>>> _future;
+  late final MealSuggestionsRepository repo;
+  late Future<List<Meal>> _future;
 
   @override
   void initState() {
     super.initState();
-    _future = _fetchRandomMeals(8); // quante proposte vuoi
+    // Iniezione semplice; puoi passare a DI centralizzato quando vuoi.
+    repo = MealSuggestionsRepository(
+      MealsApiDs(BaseApi(baseUrl: 'https://www.themealdb.com/api/json/v1/1')),
+    );
+    _future = repo.getRandomMeals(8); // quante proposte vuoi
   }
 
-  Future<List<Map<String, dynamic>>> _fetchRandomMeals(int n) async {
-    final List<Map<String, dynamic>> out = [];
-    for (var i = 0; i < n; i++) {
-      final uri = Uri.parse('$_api/random.php');
-      final r = await http.get(uri).timeout(const Duration(seconds: 10));
-      if (r.statusCode == 200) {
-        final data = jsonDecode(r.body) as Map<String, dynamic>;
-        final meals = (data['meals'] as List?) ?? [];
-        if (meals.isNotEmpty) {
-          out.add(Map<String, dynamic>.from(meals.first));
-        }
-      }
-    }
-    return out;
-  }
-
-  List<Map<String, String>> _ingredients(Map<String, dynamic> m) {
-    final out = <Map<String, String>>[];
-    for (int i = 1; i <= 20; i++) {
-      final ing = (m['strIngredient$i'] ?? '').toString().trim();
-      final msr = (m['strMeasure$i'] ?? '').toString().trim();
-      if (ing.isNotEmpty) {
-        out.add({'ingredient': ing, 'measure': msr});
-      }
-    }
-    return out;
-  }
-
-  void _openDetails(Map<String, dynamic> meal) {
+  void _openDetails(Meal meal) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
       builder: (ctx) {
-        final ings = _ingredients(meal);
         return SafeArea(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
@@ -62,57 +37,84 @@ class _MealSuggestionsPageState extends State<MealSuggestionsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    meal['strMeal'] ?? '',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                    ),
+                  // Header con titolo + bottone Chiudi
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          meal.name,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        tooltip: 'Chiudi',
+                        onPressed: () => Navigator.pop(ctx),
+                        icon: const Icon(Icons.close),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 8),
-                  if (meal['strMealThumb'] != null)
+
+                  if (meal.thumb != null)
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: Image.network(
-                        meal['strMealThumb'],
+                        meal.thumb!,
                         height: 200,
                         fit: BoxFit.cover,
                       ),
                     ),
+
                   const SizedBox(height: 12),
-                  Text('Categoria: ${meal['strCategory'] ?? '-'}'),
-                  Text('Area: ${meal['strArea'] ?? '-'}'),
+                  Text('Categoria: ${meal.category ?? '-'}'),
+                  Text('Area: ${meal.area ?? '-'}'),
                   const SizedBox(height: 12),
+
                   const Text(
                     'Ingredienti',
                     style: TextStyle(fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 6),
-                  ...ings.map(
-                    (e) => Text(
-                      '• ${e['ingredient']}${e['measure']!.isNotEmpty ? ' – ${e['measure']}' : ''}',
-                    ),
-                  ),
+                  ...meal.ingredients.map((e) {
+                    final msr = (e.measure ?? '').trim();
+                    return Text(
+                      '• ${e.ingredient}${msr.isNotEmpty ? ' – $msr' : ''}',
+                    );
+                  }),
+
                   const SizedBox(height: 12),
                   const Text(
                     'Istruzioni',
                     style: TextStyle(fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 6),
-                  Text(
-                    (meal['strInstructions'] ?? '').toString(),
-                    textAlign: TextAlign.start,
-                  ),
-                  const SizedBox(height: 12),
-                  if ((meal['strYoutube'] ?? '').toString().isNotEmpty)
+                  Text(meal.instructions ?? ''),
+
+                  const SizedBox(height: 16),
+                  if ((meal.youtube ?? '').isNotEmpty)
                     FilledButton.icon(
                       onPressed: () {
-                        // Aprilo nel browser esterno:
-                        // usa url_launcher se vuoi gestirlo in-app
+                        // TODO: apri con url_launcher (facoltativo)
                       },
                       icon: const Icon(Icons.ondemand_video),
                       label: const Text('Video su YouTube'),
                     ),
+
+                  const SizedBox(height: 16),
+                  // Pulsante evidente per uscire
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      onPressed: () => Navigator.pop(ctx),
+                      icon: const Icon(Icons.arrow_back),
+                      label: const Text('Torna alla lista'),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -125,8 +127,11 @@ class _MealSuggestionsPageState extends State<MealSuggestionsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Cosa mangiare oggi?')),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
+      appBar: AppBar(
+        leading: const BackButton(), // back sempre visibile
+        title: const Text('Cosa mangiare oggi?'),
+      ),
+      body: FutureBuilder<List<Meal>>(
         future: _future,
         builder: (context, snap) {
           if (snap.connectionState != ConnectionState.done) {
@@ -150,20 +155,23 @@ class _MealSuggestionsPageState extends State<MealSuggestionsPage> {
             itemCount: meals.length,
             itemBuilder: (context, i) {
               final m = meals[i];
-              return InkWell(
-                onTap: () => _openDetails(m),
-                child: Card(
-                  elevation: 2,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  clipBehavior: Clip.antiAlias,
+              // Card → InkWell interno (no rettangolo overlay, splash disattivato)
+              return Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                clipBehavior: Clip.antiAlias, // clip contenuto + ripple
+                child: InkWell(
+                  onTap: () => _openDetails(m),
+                  borderRadius: BorderRadius.circular(14),
+                  splashFactory: NoSplash.splashFactory, // niente splash
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (m['strMealThumb'] != null)
+                      if (m.thumb != null)
                         Image.network(
-                          m['strMealThumb'],
+                          m.thumb!,
                           height: 130,
                           width: double.infinity,
                           fit: BoxFit.cover,
@@ -174,7 +182,7 @@ class _MealSuggestionsPageState extends State<MealSuggestionsPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              m['strMeal'] ?? '',
+                              m.name,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
@@ -183,7 +191,7 @@ class _MealSuggestionsPageState extends State<MealSuggestionsPage> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              '${m['strCategory'] ?? '-'} • ${m['strArea'] ?? '-'}',
+                              '${m.category ?? '-'} • ${m.area ?? '-'}',
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.black54,
